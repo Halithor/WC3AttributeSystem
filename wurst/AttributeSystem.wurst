@@ -1,0 +1,65 @@
+package AttributeSystem
+
+import AttributeSystem_Globals
+import LinkedList
+import HashList
+
+/** Returns the value of a given attribute for the unit. 
+  */
+public function unit.getAttribute(AttributeId atr_id) returns int
+    return 0
+
+/** Sets the value of the specified attribute.
+*
+* Throws an error if the attribute is a dependent.
+*/
+public function unit.setAttribute(AttributeId atr_id, int value)
+    skip
+
+/** Adds the given delta to the specified attribute. 
+  *
+  * Throws an error if the attribute is a dependent.
+  */
+public function unit.addAttribute(AttributeId atr_id, int delta)
+    skip
+
+
+// Class that represents an attribute.
+public class Attribute
+    // The id of this attribute
+    AttributeId atr_id
+    // The list of other attributes that this attribute depends on.
+    HashList<AttributeId> parents = null
+    // The attributes that depend on this attribute. This is calculated after 
+    // initialization is finished.
+    HashList<AttributeId> dependents = new HashList<AttributeId>()
+    // How to calculate this attribute, based on the parents.
+    AttributeCalculator calculator = null
+    // Effects that happen when the value of this attribute changes.
+    LinkedList<AttributeChangeHandler> changeHandlers = new LinkedList<AttributeChangeHandler>()
+
+    construct(AttributeId atr_id)
+        this.atr_id = atr_id
+
+    construct(AttributeId atr_id, HashList<AttributeId> parents, AttributeCalculator calculator)
+        this.atr_id = atr_id
+        this.parents = parents
+        this.calculator = calculator
+
+    function registerChangeHandler(AttributeChangeHandler handler)
+        changeHandlers.add(handler)
+
+    // This is called when any attribute this attribute is dependant on is 
+    // changed.
+    function updateForUnit(unit u)
+        var newVal = 0
+        let oldVal = u.getAttribute(atr_id)
+        if calculator != null
+            // we're re calculating
+            newVal = calculator.calculateAttribute(u)
+            u.setAttribute(atr_id, newVal)
+        else
+            // We're a master, since we have no deps.
+            newVal = u.getAttribute(atr_id)
+        for handler in changeHandlers
+            handler.handleAtrChange(u, newVal, oldVal)

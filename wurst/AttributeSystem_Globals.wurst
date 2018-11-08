@@ -1,0 +1,87 @@
+package AttributeSystem_Globals
+
+import ObjectIdGenerator
+
+constant ID_GEN_ATTR = new IdGenerator('AT00')
+
+public class AttributeId
+    int id
+
+    construct(int atr_id)
+        id = atr_id
+
+public function getNextAtrId() returns AttributeId
+    return new AttributeId(ID_GEN_ATTR.next())
+
+// ===== Primitive Attributes =====
+public constant ATR_LIFE_MAX = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_LIFE_MAX_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_LIFE_MAX_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_LIFE_REGEN = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_LIFE_REGEN_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_LIFE_REGEN_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_MAX = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_MAX_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_MAX_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_REGEN = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_REGEN_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MANA_REGEN_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ARMOR = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ARMOR_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ARMOR_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_CD = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_CD_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_CD_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DMG = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DMG_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DMG_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE_SIDES = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE_SIDES_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_ATK_DICE_SIDES_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MOVESPEED = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MOVESPEED_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_MOVESPEED_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_AGILITY = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_AGILITY_TOTAL = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_AGILITY_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_AGILITY_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_STRENGTH = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_STRENGTH_TOTAL = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_STRENGTH_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_STRENGTH_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_INTELLIGENCE = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_INTELLIGENCE_TOTAL = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_INTELLIGENCE_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_INTELLIGENCE_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+// 0 = AGI, 1 = STR, 2 = INT, default STR
+public constant ATR_PRIMARY_ATR = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// ===== Primitive Bonuses =====
+public constant ATR_BONUS_ARMOR = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_BONUS_ATK_DMG = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_BONUS_AGILITY = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_BONUS_STRENGTH = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_BONUS_INTELLIGENCE = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// ===== Interfaces =====
+
+/** Interface for calculating an attribute based on the unit.
+  */
+public interface AttributeCalculator
+    function calculateAttribute(unit u) returns int
+
+/** Interface for registering listeners for attribute changes. This is useful 
+  * for effects that are derived from the attributes (such as actually 
+  * changing a unit's max health).
+  *
+  * Handlers MUST be read only on the unit's attributes and will throw an error 
+  * if it tries to update the units attributes.
+  */
+public interface AttributeChangeHandler 
+    function handleAtrChange(unit u, int newValue, int oldValue)
+
+// If you're really tricky you could use the change handlers to update tooltips
+// for any spells whos effects are based off this ability ;)

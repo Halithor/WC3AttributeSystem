@@ -1,0 +1,36 @@
+package AttributeSystem_PrimitiveAtrs
+
+import AttributeSystem_Registration
+import AttributeSystem_Globals
+import AttributeSystem_PrimitiveConfig
+
+// Register all the primitive attrs with basic 
+function registerPrimitiveAttributes()
+    registerAttribute(ATR_LIFE_MAX, parentsLifeMax, calculateLifeMax)
+        .registerChangeHandler(handleLifeMax)
+    registerAttribute(ATR_LIFE_REGEN, parentsLifeRegen, calculateLifeRegen)
+        .registerChangeHandler(handleLifeRegen)
+    registerAttribute(ATR_MANA_MAX, parentsManaMax, calculateManaMax)
+        .registerChangeHandler(handleManaMax)
+    registerAttribute(ATR_MANA_REGEN, parentsManaRegen, calculateManaRegen)
+        .registerChangeHandler(handleManaRegen)
+    registerAttribute(ATR_ARMOR, parentsArmor, calculateArmor)
+        .registerChangeHandler(handleArmor)
+    registerAttribute(ATR_ATK_CD, parentsAttackCd, calculateAttackCd)
+        .registerChangeHandler(handleAttackCd)
+    registerAttribute(ATR_ATK_DMG, parentsAttackDmg, calculateAttackDmg)
+        .registerChangeHandler(handleAttackDmg)
+    registerAttribute(ATR_ATK_DICE, parentsAttackDice, calculateAttackDice)
+        .registerChangeHandler(handleAttackDice)
+    registerAttribute(ATR_ATK_DICE_SIDES, parentsAttackDiceSides, calculateAttackDiceSides)
+        .registerChangeHandler(handleAttackDiceSides)
+    registerAttribute(ATR_MOVESPEED, parentsMovespeed, calculateMovespeed)
+        .registerChangeHandler(handleMovespeed)
+    registerAttribute(ATR_AGILITY, parentsAgility, calculateAgility)
+        .registerChangeHandler(handleAgility)
+    registerAttribute(ATR_STRENGTH, parentsStrength, calculateStrength)
+        .registerChangeHandler(handleStrength)
+    registerAttribute(ATR_INTELLIGENCE, parentsIntelligence, calculateIntelligence)
+        .registerChangeHandler(handleIntelligence)
+    
+    

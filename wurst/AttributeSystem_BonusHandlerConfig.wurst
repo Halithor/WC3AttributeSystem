@@ -1,0 +1,16 @@
+package AttributeSystem_BonusHandlerConfig
+/**
+* Values are the exponents to base 2.
+* 2^9=512, 2^10=1024, 2^11=2048, 2^12=4096 etc.
+*/
+
+@configurable public constant MAX_BONUS_DAMAGE = 16
+@configurable public constant MAX_BONUS_ARMOR = 16
+@configurable public constant MAX_BONUS_SIGHTRANGE = 11
+@configurable public constant MAX_BONUS_LIFEREGEN = 18
+@configurable public constant MAX_BONUS_MANAREGEN = 18
+@configurable public constant MAX_BONUS_ATTACKSPEED = 9
+@configurable public constant MAX_BONUS_STRENGTH = 15
+@configurable public constant MAX_BONUS_AGILITY = 15
+@configurable public constant MAX_BONUS_INTELLIGENCE = 15
+ 
