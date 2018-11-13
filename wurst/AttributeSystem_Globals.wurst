@@ -2,16 +2,13 @@ package AttributeSystem_Globals
 
 import ObjectIdGenerator
 
-constant ID_GEN_ATTR = new IdGenerator('AT00')
+public constant ID_GEN_ATTR = new IdGenerator('AT00')
 
 public class AttributeId
     int id
 
     construct(int atr_id)
         id = atr_id
-
-public function getNextAtrId() returns AttributeId
-    return new AttributeId(ID_GEN_ATTR.next())
 
 // ===== Primitive Attributes =====
 public constant ATR_LIFE_MAX = new AttributeId(compiletime(ID_GEN_ATTR.next()))
@@ -82,6 +79,3 @@ public interface AttributeCalculator
   */
 public interface AttributeChangeHandler 
     function handleAtrChange(unit u, int newValue, int oldValue)
-
-// If you're really tricky you could use the change handlers to update tooltips
-// for any spells whos effects are based off this ability ;)

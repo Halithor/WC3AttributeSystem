@@ -3,34 +3,31 @@ package AttributeSystem_PrimitiveConfig
 import AttributeSystem_Globals
 import AttributeSystem_BonusHandler
 import HashList
-import AttributeSystem
-import AttributeSystem_Registration
+import initlater AttributeSystem
 
-@configureable constant LifeMaxPerStr = 25.0
-@configureable constant LifeRegenPerStr = 0.05
-@configureable constant ManaMaxPerInt = 15.0
-@configureable constant ManaRegenPerInt = 0.05
-@configureable constant ArmorPerAgi = 0.334
-@configureable constant AtkSpdPerAgi = 0.02
-@configureable constant MovespeedPerAgi = 0.0
-@configureable constant DamagePerPrimAtr = 1.0
-// IAS is missing because % IAS is not a primitive! Add it yourself if you want
-// the same behavior as in WC3
+@configureable constant lifeMaxPerStr = 25.0
+@configureable constant lifeRegenPerStr = 0.05
+@configureable constant manaMaxPerInt = 15.0
+@configureable constant manaRegenPerInt = 0.05
+@configureable constant armorPerAgi = 0.334
+@configureable constant atkSpdPerAgi = 0.02
+@configureable constant movespeedPerAgi = 0.0
+@configureable constant damagePerPrimAtr = 1.0
 
 // Please configure ALL of these!!! It's reasonable to set them to null, if they
 // will be master attributes in your arrangement.
-@configurable public AttributeCalculator calculateLifeMax = u -> ((u.getAttribute(ATR_LIFE_MAX_FLAT) + (u.getAttribute(ATR_STRENGTH) * LifeMaxPerStr)) * (1.0 + (u.getAttribute(ATR_LIFE_MAX_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateLifeMax = u -> ((u.getAttribute(ATR_LIFE_MAX_FLAT) + (u.getAttribute(ATR_STRENGTH) * lifeMaxPerStr)) * (1.0 + (u.getAttribute(ATR_LIFE_MAX_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsLifeMax = asList(ATR_STRENGTH, ATR_LIFE_MAX_FLAT, ATR_MANA_MAX_PERC)
-@configurable public AttributeCalculator calculateLifeRegen = u -> ((u.getAttribute(ATR_LIFE_REGEN_FLAT) + (u.getAttribute(ATR_STRENGTH) * LifeRegenPerStr)) * (1.0 + (u.getAttribute(ATR_LIFE_REGEN_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateLifeRegen = u -> ((u.getAttribute(ATR_LIFE_REGEN_FLAT) + (u.getAttribute(ATR_STRENGTH) * lifeRegenPerStr)) * (1.0 + (u.getAttribute(ATR_LIFE_REGEN_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsLifeRegen = asList(ATR_STRENGTH, ATR_LIFE_REGEN_FLAT, ATR_LIFE_REGEN_PERC)
-@configurable public AttributeCalculator calculateManaMax = u -> ((u.getAttribute(ATR_MANA_MAX_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * ManaMaxPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_MAX_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateManaMax = u -> ((u.getAttribute(ATR_MANA_MAX_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * manaMaxPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_MAX_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsManaMax = asList(ATR_INTELLIGENCE, ATR_MANA_MAX_FLAT, ATR_MANA_MAX_PERC)
-@configurable public AttributeCalculator calculateManaRegen = u -> ((u.getAttribute(ATR_MANA_REGEN_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * ManaRegenPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_REGEN_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateManaRegen = u -> ((u.getAttribute(ATR_MANA_REGEN_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * manaRegenPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_REGEN_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsManaRegen = asList(ATR_INTELLIGENCE, ATR_MANA_MAX_FLAT, ATR_MANA_MAX_PERC)
-@configurable public AttributeCalculator calculateArmor =  u -> ((u.getAttribute(ATR_ARMOR_FLAT) + (u.getAttribute(ATR_AGILITY) * ArmorPerAgi)) * (1.0 + (u.getAttribute(ATR_ARMOR_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateArmor =  u -> ((u.getAttribute(ATR_ARMOR_FLAT) + (u.getAttribute(ATR_AGILITY) * armorPerAgi)) * (1.0 + (u.getAttribute(ATR_ARMOR_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsArmor = asList(ATR_AGILITY, ATR_ARMOR_FLAT, ATR_ARMOR_PERC)
 // Attack Speed = Base Cooldown Time ÷ (1 + Increased Attack Speed)
-@configurable public AttributeCalculator calculateAttackCd =  u -> (u.getAttribute(ATR_ATK_CD_FLAT) / (1 + (u.getAttribute(ATR_AGILITY) * AtkSpdPerAgi) + (u.getAttribute(ATR_ATK_CD_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateAttackCd =  u -> (u.getAttribute(ATR_ATK_CD_FLAT) / (1 + (u.getAttribute(ATR_AGILITY) * atkSpdPerAgi) + (u.getAttribute(ATR_ATK_CD_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsAttackCd = asList(ATR_AGILITY, ATR_ATK_CD_FLAT, ATR_ATK_CD_PERC)
 @configurable public AttributeCalculator calculateAttackDmg = u -> begin
     int primary
@@ -40,21 +37,27 @@ import AttributeSystem_Registration
         primary = u.getAttribute(ATR_INTELLIGENCE)
     else
         primary = u.getAttribute(ATR_STRENGTH)
-    return ((u.getAttribute(ATR_ATK_DMG_FLAT) + (primary * DamagePerPrimAtr)) * (1.0 + (u.getAttribute(ATR_ATK_DMG_PERC) / 100.0))).round()
+    return ((u.getAttribute(ATR_ATK_DMG_FLAT) + (primary * damagePerPrimAtr)) * (1.0 + (u.getAttribute(ATR_ATK_DMG_PERC) / 100.0))).round()
 end
 @configurable public HashList<AttributeId> parentsAttackDmg = asList(ATR_ATK_DMG_FLAT, ATR_ATK_DMG_PERC, ATR_PRIMARY_ATR, ATR_AGILITY, ATR_STRENGTH, ATR_INTELLIGENCE)
 @configurable public AttributeCalculator calculateAttackDice = u -> (u.getAttribute(ATR_ATK_DICE_FLAT) * (100 + u.getAttribute(ATR_ATK_DICE_PERC))) div 100
 @configurable public HashList<AttributeId> parentsAttackDice = asList(ATR_ATK_DICE_FLAT, ATR_ATK_DICE_PERC)
 @configurable public AttributeCalculator calculateAttackDiceSides = u -> (u.getAttribute(ATR_ATK_DICE_SIDES_FLAT) * (100 + u.getAttribute(ATR_ATK_DICE_SIDES_PERC))) div 100
 @configurable public HashList<AttributeId> parentsAttackDiceSides = asList(ATR_ATK_DICE_SIDES_FLAT, ATR_ATK_DICE_SIDES_PERC)
-@configurable public AttributeCalculator calculateMovespeed = u -> ((u.getAttribute(ATR_MOVESPEED_FLAT) + (u.getAttribute(ATR_AGILITY) * MovespeedPerAgi)) * (1.0 + (u.getAttribute(ATR_MOVESPEED_PERC) / 100.0))).round()
+@configurable public AttributeCalculator calculateMovespeed = u -> ((u.getAttribute(ATR_MOVESPEED_FLAT) + (u.getAttribute(ATR_AGILITY) * movespeedPerAgi)) * (1.0 + (u.getAttribute(ATR_MOVESPEED_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsMovespeed = asList(ATR_MOVESPEED_FLAT, ATR_AGILITY, ATR_MOVESPEED_PERC)
-@configurable public AttributeCalculator calculateAgility = null
-@configurable public HashList<AttributeId> parentsAgility = null
-@configurable public AttributeCalculator calculateStrength = null
-@configurable public HashList<AttributeId> parentsStrength = null
-@configurable public AttributeCalculator calculateIntelligence = null
-@configurable public HashList<AttributeId> parentsIntelligence = null
+@configurable public AttributeCalculator calculateAgility = u -> (u.getAttribute(ATR_AGILITY_FLAT) * (100 + u.getAttribute(ATR_AGILITY_PERC))) div 100 
+@configurable public HashList<AttributeId> parentsAgility = asList(ATR_AGILITY_FLAT, ATR_AGILITY_PERC)
+@configurable public AttributeCalculator calculateAgilityTotal = u -> u.getAttribute(ATR_AGILITY) + u.getAttribute(ATR_BONUS_AGILITY)
+@configurable public HashList<AttributeId> parentsAgilityTotal = asList(ATR_AGILITY, ATR_BONUS_AGILITY)
+@configurable public AttributeCalculator calculateStrength = u -> (u.getAttribute(ATR_STRENGTH_FLAT) * (100 + u.getAttribute(ATR_STRENGTH_PERC))) div 100 
+@configurable public HashList<AttributeId> parentsStrength = asList(ATR_STRENGTH_FLAT, ATR_STRENGTH_PERC)
+@configurable public AttributeCalculator calculateStrengthTotal = u -> u.getAttribute(ATR_STRENGTH) + u.getAttribute(ATR_BONUS_STRENGTH)
+@configurable public HashList<AttributeId> parentsStrengthTotal = asList(ATR_STRENGTH, ATR_BONUS_STRENGTH)
+@configurable public AttributeCalculator calculateIntelligence = u -> (u.getAttribute(ATR_INTELLIGENCE_FLAT) * (100 + u.getAttribute(ATR_INTELLIGENCE_PERC))) div 100 
+@configurable public HashList<AttributeId> parentsIntelligence = asList(ATR_INTELLIGENCE_FLAT, ATR_INTELLIGENCE_PERC)
+@configurable public AttributeCalculator calculateIntelligenceTotal = u -> u.getAttribute(ATR_INTELLIGENCE) + u.getAttribute(ATR_BONUS_INTELLIGENCE)
+@configurable public HashList<AttributeId> parentsIntelligenceTotal = asList(ATR_INTELLIGENCE, ATR_BONUS_INTELLIGENCE)
 
 // These are handlers that give the primitive attributes effects like you would find in
 // standard WC3.
@@ -84,3 +87,8 @@ end
 @configurable public AttributeChangeHandler handleStrength = (u, value, old) -> u.setStr(value) 
 @configurable public AttributeChangeHandler handleIntelligence = (u, value, old) -> u.setInt(value) 
 
+@configurable public AttributeChangeHandler handleBonusArmor = (u, value, old) -> setUnitBonus(u, Bonus.ARMOR, value) 
+@configurable public AttributeChangeHandler handleBonusAtkDmg = (u, value, old) -> setUnitBonus(u, Bonus.DAMAGE, value) 
+@configurable public AttributeChangeHandler handleBonusAgility = (u, value, old) -> setUnitBonus(u, Bonus.AGILITY, value) 
+@configurable public AttributeChangeHandler handleBonusStrength = (u, value, old) -> setUnitBonus(u, Bonus.STRENGTH, value)
+@configurable public AttributeChangeHandler handleBonusIntelligence = (u, value, old) -> setUnitBonus(u, Bonus.INTELLIGENCE, value) 

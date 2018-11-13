@@ -175,7 +175,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionAttackBonus(fourchar2int(raw))
+         let a = new AbilityDefinitionAttackBonus(raw.fromRawCode())
          a.setAttackBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Damage")
      
@@ -192,7 +192,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionDefenseBonusPlus1(fourchar2int(raw))
+         let a = new AbilityDefinitionDefenseBonusPlus1(raw.fromRawCode())
          a.setDefenseBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Armor")
 
@@ -209,7 +209,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionSightBonus(fourchar2int(raw))
+         let a = new AbilityDefinitionSightBonus(raw.fromRawCode())
          a.setSightRangeBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Sightrange")
 
@@ -226,7 +226,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionNeutralRegenhealthonly(fourchar2int(raw))
+         let a = new AbilityDefinitionNeutralRegenhealthonly(raw.fromRawCode())
             ..setAmountofHitPointsRegenerated(1, sign * pow2(n) / 200.)
             ..setPercentage(1, false)
             ..setAreaofEffect(1, 1)
@@ -248,7 +248,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-        let a = new AbilityDefinitionNeutralRegenmanaonly(fourchar2int(raw))
+        let a = new AbilityDefinitionNeutralRegenmanaonly(raw.fromRawCode())
         a.setPercentage(1, false)
         a.setAreaofEffect(1, 1)
         a.setTargetsAllowed(1, "self")
@@ -269,7 +269,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionStrengthBonusPlus1(fourchar2int(raw))
+         let a = new AbilityDefinitionStrengthBonusPlus1(raw.fromRawCode())
          a.setStrengthBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Strength")
 
@@ -286,7 +286,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionAgilityBonusPlus1(fourchar2int(raw))
+         let a = new AbilityDefinitionAgilityBonusPlus1(raw.fromRawCode())
          a.setAgilityBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Agility")
 
@@ -303,7 +303,7 @@ init
          else
               raw = rawCode + "--"
               sign = -1
-         let a = new AbilityDefinitionIntelligenceBonusPlus1(fourchar2int(raw))
+         let a = new AbilityDefinitionIntelligenceBonusPlus1(raw.fromRawCode())
          a.setIntelligenceBonus(1, sign * pow2(n))
          setProperties(a, I2S(sign * pow2(n)), "Intelligence")
      
