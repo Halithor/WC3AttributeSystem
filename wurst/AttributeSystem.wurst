@@ -111,8 +111,7 @@ function unit.processUpdates(HashSet<AttributeId> updates, IterableMap<Attribute
         changeList.put(depId, new Change(changeList.get(depId).oldVal, newVal))
     
 // ===== Public unit API =====
-/** Returns the value of a given attribute for the unit. 
-  */
+/** Returns the value of a given attribute for the unit. */
 public function unit.getAttribute(AttributeId atrId) returns int
   return ATTRIBUTE_STORE.getUnitAttribute(this, atrId)
 
@@ -139,8 +138,8 @@ public function unit.setAttribute(AttributeId atrId, int value)
   // After all changes have settled, apply the effects
   this.applyChanges(changeList)
 
-/** Applies the list of attributes values to a unit. More efficient than calling setAttribute numerous times.
-  *
+/** Applies the list of attributes values to a unit. More efficient than calling setAttribute 
+  * numerous times.
   */
 public function unit.setAttributeList(IterableMap<AttributeId, int> values)
   let changeList = new IterableMap<AttributeId, Change>()
@@ -168,16 +167,25 @@ public function unit.setAttributeList(IterableMap<AttributeId, int> values)
 public function unit.addAttribute(AttributeId atrId, int delta)
   this.setAttribute(atrId, this.getAttribute(atrId) + delta)
 
+/**
+  * Adds the list of values to the associated attribute
+  */
 public function unit.addAttributeList(IterableMap<AttributeId, int> values)
   for atrId in values
     values.put(atrId, values.get(atrId) + this.getAttribute(atrId))
   this.setAttributeList(values)
 
+/**
+  * Removes the values in the list from the unit's attributes 
+  */
 public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
   for atrId in values
     values.put(atrId, this.getAttribute(atrId) - values.get(atrId))
   this.setAttributeList(values)
 
+/**
+  * Initializes the attributes list for a given unit with the given values 
+  */
 public function unit.initAttributes(IterableMap<AttributeId, int> values)
   for atrId in ATTRIBUTE_LIST
     let atr = ATTRIBUTE_LIST.get(atrId)
@@ -186,7 +194,10 @@ public function unit.initAttributes(IterableMap<AttributeId, int> values)
       values.put(atrId, 0)
   this.setAttributeList(values)
 
-// Attempt to grab as many attributes from this unit's stats as possible
+/**
+  * Attempt to parse as many starting attributes as we can from the given unit and initialize an 
+  * attribute list for it.
+  */
 public function unit.parseAndInitAttributes()
   let values = new IterableMap<AttributeId, int>()
     ..put(ATR_LIFE_MAX_FLAT, this.getMaxHP().round())
@@ -218,9 +229,10 @@ public function registerAttribute(AttributeId atrId, HashList<AttributeId> paren
   ATTRIBUTE_LIST.put(atrId, atr)
   return atr
 
-/** Register a new attribute for the system. Use this method for master attributes,
-* which are dependent on no others for their value.
-*/
+/** 
+  * Register a new attribute for the system. Use this method for master attributes,
+  * which are dependent on no others for their value.
+  */
 public function registerAttribute(AttributeId atrId) returns Attribute
   if registrationFinished
     error("Attribute registration has finished!")
