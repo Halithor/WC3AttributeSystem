@@ -5,14 +5,14 @@ import AttributeSystem_BonusHandler
 import HashList
 import initlater AttributeSystem
 
-@configureable constant lifeMaxPerStr = 25.0
-@configureable constant lifeRegenPerStr = 0.05
-@configureable constant manaMaxPerInt = 15.0
-@configureable constant manaRegenPerInt = 0.05
-@configureable constant armorPerAgi = 0.334
-@configureable constant atkSpdPerAgi = 0.02
-@configureable constant movespeedPerAgi = 0.0
-@configureable constant damagePerPrimAtr = 1.0
+@configurable constant lifeMaxPerStr = 25.0
+@configurable constant lifeRegenPerStr = 0.05
+@configurable constant manaMaxPerInt = 15.0
+@configurable constant manaRegenPerInt = 0.05
+@configurable constant armorPerAgi = 0.334
+@configurable constant atkSpdPerAgi = 0.02
+@configurable constant movespeedPerAgi = 0.0
+@configurable constant damagePerPrimAtr = 1.0
 
 // Please configure ALL of these!!! It's reasonable to set them to null, if they
 // will be master attributes in your arrangement.

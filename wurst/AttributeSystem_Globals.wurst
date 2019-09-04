@@ -5,10 +5,10 @@ import ObjectIdGenerator
 public constant ID_GEN_ATTR = new IdGenerator('AT00')
 
 public class AttributeId
-    int id
+  int id
 
-    construct(int atr_id)
-        id = atr_id
+  construct(int atr_id)
+    id = atr_id
 
 // ===== Primitive Attributes =====
 public constant ATR_LIFE_MAX = new AttributeId(compiletime(ID_GEN_ATTR.next()))
@@ -68,7 +68,7 @@ public constant ATR_BONUS_INTELLIGENCE = new AttributeId(compiletime(ID_GEN_ATTR
 /** Interface for calculating an attribute based on the unit.
   */
 public interface AttributeCalculator
-    function calculateAttribute(unit u) returns int
+  function calculateAttribute(unit u) returns int
 
 /** Interface for registering listeners for attribute changes. This is useful 
   * for effects that are derived from the attributes (such as actually 
@@ -78,4 +78,4 @@ public interface AttributeCalculator
   * if it tries to update the units attributes.
   */
 public interface AttributeChangeHandler 
-    function handleAtrChange(unit u, int newValue, int oldValue)
+  function handleAtrChange(unit u, int newValue, int oldValue)

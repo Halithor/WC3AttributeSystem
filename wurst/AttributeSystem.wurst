@@ -14,66 +14,66 @@ var registrationFinished = false
 
 /** Essentially a tuple, because we can't store tuples in Hash-Things */
 class Change
-    int oldVal
-    int newVal
+  int oldVal
+  int newVal
 
-    construct(int ov, int nv)
-        oldVal = ov
-        newVal = nv
+  construct(int ov, int nv)
+    oldVal = ov
+    newVal = nv
 
 /** Stores the current attributes for a unit */
 class AttributeStore
-    private hashtable ht
+  private hashtable ht
 
-    construct()
-        ht = InitHashtable()
+  construct()
+    ht = InitHashtable()
 
-    function setUnitAttribute(unit u, AttributeId atrId, int value)
-        ht.saveInt(u.getHandleId(), atrId.id, value)
+  function setUnitAttribute(unit u, AttributeId atrId, int value)
+    ht.saveInt(u.getHandleId(), atrId.id, value)
 
-    function getUnitAttribute(unit u, AttributeId atrId) returns int
-        int value = 0
-        if ht.hasInt(u.getHandleId(), atrId.id)
-            value = ht.loadInt(u.getHandleId(), atrId.id)
-        return value
+  function getUnitAttribute(unit u, AttributeId atrId) returns int
+    int value = 0
+    if ht.hasInt(u.getHandleId(), atrId.id)
+      value = ht.loadInt(u.getHandleId(), atrId.id)
+    return value
 
 
 // Class that represents an attribute.
 public class Attribute
-    // The id of this attribute
-    AttributeId atrId
-    // The list of other attributes that this attribute depends on.
-    HashList<AttributeId> parents = null
-    // The attributes that depend on this attribute. This is calculated after 
-    // initialization is finished.
-    HashList<AttributeId> dependents = new HashList<AttributeId>()
-    // How to calculate this attribute, based on the parents.
-    AttributeCalculator calculator = null
-    // Effects that happen when the value of this attribute changes.
-    LinkedList<AttributeChangeHandler> changeHandlers = new LinkedList<AttributeChangeHandler>()
+  // The id of this attribute
+  AttributeId atrId
+  // The list of other attributes that this attribute depends on.
+  HashList<AttributeId> parents = null
+  // The attributes that depend on this attribute. This is calculated after 
+  // initialization is finished.
+  HashList<AttributeId> dependents = new HashList<AttributeId>()
+  // How to calculate this attribute, based on the parents.
+  AttributeCalculator calculator = null
+  // Effects that happen when the value of this attribute changes.
+  LinkedList<AttributeChangeHandler> changeHandlers = new LinkedList<AttributeChangeHandler>()
 
-    construct(AttributeId atr_id)
-        this.atrId = atr_id
+  construct(AttributeId atr_id)
+    this.atrId = atr_id
 
-    construct(AttributeId atr_id, HashList<AttributeId> parents, AttributeCalculator calculator)
-        this.atrId = atr_id
-        this.parents = parents
-        this.calculator = calculator
+  construct(AttributeId atr_id, HashList<AttributeId> parents, AttributeCalculator calculator)
+    this.atrId = atr_id
+    this.parents = parents
+    this.calculator = calculator
 
-    function registerChangeHandler(AttributeChangeHandler handler)
-        changeHandlers.add(handler)
+  function registerChangeHandler(AttributeChangeHandler handler)
+    changeHandlers.add(handler)
 
-    /** Using the calculator, calculate the value of this attribute for the unit. */
-    function calculateForUnit(unit u) returns int
-        var val = u.getAttribute(atrId)
-        if calculator != null
-            val = calculator.calculateAttribute(u)
-        return val
+  /** Using the calculator, calculate the value of this attribute for the unit. */
+  function calculateForUnit(unit u) returns int
+    var val = u.getAttribute(atrId)
+    if calculator != null
+      val = calculator.calculateAttribute(u)
+    return val
 
-    /** Call the change handlers on the given unit for the given change. */
-    function applyChangeForUnit(unit u, Change change)
-        for handler in changeHandlers
-            handler.handleAtrChange(u, change.newVal, change.oldVal)
+  /** Call the change handlers on the given unit for the given change. */
+  function applyChangeForUnit(unit u, Change change)
+    for handler in changeHandlers
+      handler.handleAtrChange(u, change.newVal, change.oldVal)
 
 
 public constant ATTRIBUTE_STORE = new AttributeStore()
@@ -82,162 +82,162 @@ public constant ATTRIBUTE_LIST = new IterableMap<AttributeId, Attribute>()
 
 // ===== Configurable stuff =====
 @configurable function registerAttributes()
-    skip
+  skip
 
 
 // ===== Helpful functions =====
 
 function unit.applyChanges(IterableMap<AttributeId, Change> changes)
-    for atrId in changes
-        let atr = ATTRIBUTE_LIST.get(atrId)
-        atr.applyChangeForUnit(this, changes.get(atrId))
+  for atrId in changes
+    let atr = ATTRIBUTE_LIST.get(atrId)
+    atr.applyChangeForUnit(this, changes.get(atrId))
 
 function unit.processUpdates(HashSet<AttributeId> updates, IterableMap<AttributeId, Change> changeList)
-    while not updates.isEmpty()
-        // Pop from the list to update
-        let depId = updates.get(updates.size() - 1)
-        updates.removeAt(updates.size() - 1)
-        // Get the attribute and calculate a new value
-        let depAtr = ATTRIBUTE_LIST.get(depId)
-        let newVal = depAtr.calculateForUnit(this)
-        let oldVal = this.getAttribute(depId)
-        if newVal != oldVal
-            // If the new value is different, update it in the store, queue its deps, and add it to the change list
-            ATTRIBUTE_STORE.setUnitAttribute(this, depId, newVal)
-            updates.addAll(depAtr.dependents)
-            if not changeList.has(depId)
-                changeList.put(depId, new Change(oldVal, newVal))
-            else
-                changeList.put(depId, new Change(changeList.get(depId).oldVal, newVal))
-        
+  while not updates.isEmpty()
+    // Pop from the list to update
+    let depId = updates.get(updates.size() - 1)
+    updates.removeAt(updates.size() - 1)
+    // Get the attribute and calculate a new value
+    let depAtr = ATTRIBUTE_LIST.get(depId)
+    let newVal = depAtr.calculateForUnit(this)
+    let oldVal = this.getAttribute(depId)
+    if newVal != oldVal
+      // If the new value is different, update it in the store, queue its deps, and add it to the change list
+      ATTRIBUTE_STORE.setUnitAttribute(this, depId, newVal)
+      updates.addAll(depAtr.dependents)
+      if not changeList.has(depId)
+        changeList.put(depId, new Change(oldVal, newVal))
+      else
+        changeList.put(depId, new Change(changeList.get(depId).oldVal, newVal))
+    
 // ===== Public unit API =====
 /** Returns the value of a given attribute for the unit. 
   */
 public function unit.getAttribute(AttributeId atrId) returns int
-    return ATTRIBUTE_STORE.getUnitAttribute(this, atrId)
+  return ATTRIBUTE_STORE.getUnitAttribute(this, atrId)
 
 /** Sets the value of the specified attribute.
 *
 * Throws an error if the attribute is a dependent.
 */
 public function unit.setAttribute(AttributeId atrId, int value)
-    let atr = ATTRIBUTE_LIST.get(atrId)
-    let changeList = new IterableMap<AttributeId, Change>()
-    if atr.parents != null
-        error("Cannot set an attrbute with parents") 
-        return
-    // Check to make sure this is actually a change
-    if this.getAttribute(atrId) != value
-        changeList.put(atrId, new Change(this.getAttribute(atrId), value))
-        ATTRIBUTE_STORE.setUnitAttribute(this, atrId, value)
-        
-        let toUpdate = new HashSet<AttributeId>()
-        toUpdate.addAll(atr.dependents)
-        // Process all the dependency updates and add the changes to this CL
-        this.processUpdates(toUpdate, changeList)
-        
-    // After all changes have settled, apply the effects
-    this.applyChanges(changeList)
+  let atr = ATTRIBUTE_LIST.get(atrId)
+  let changeList = new IterableMap<AttributeId, Change>()
+  if atr.parents != null
+    error("Cannot set an attrbute with parents") 
+    return
+  // Check to make sure this is actually a change
+  if this.getAttribute(atrId) != value
+    changeList.put(atrId, new Change(this.getAttribute(atrId), value))
+    ATTRIBUTE_STORE.setUnitAttribute(this, atrId, value)
+    
+    let toUpdate = new HashSet<AttributeId>()
+    toUpdate.addAll(atr.dependents)
+    // Process all the dependency updates and add the changes to this CL
+    this.processUpdates(toUpdate, changeList)
+    
+  // After all changes have settled, apply the effects
+  this.applyChanges(changeList)
 
 /** Applies the list of attributes values to a unit. More efficient than calling setAttribute numerous times.
   *
   */
 public function unit.setAttributeList(IterableMap<AttributeId, int> values)
-    let changeList = new IterableMap<AttributeId, Change>()
-    let toUpdate = new HashSet<AttributeId>()
-    // First go through all these master attribute sets and update them
-    for atrId in values
-        if not ATTRIBUTE_LIST.get(atrId).parents.isEmpty()
-            error("Cannot directly modify dependent attribute!")
-            return
-        let value = values.get(atrId)
-        if value != this.getAttribute(atrId)
-            changeList.put(atrId, new Change(this.getAttribute(atrId), value))
-            ATTRIBUTE_STORE.setUnitAttribute(this, atrId, value)
-            toUpdate.addAll(ATTRIBUTE_LIST.get(atrId).dependents)
+  let changeList = new IterableMap<AttributeId, Change>()
+  let toUpdate = new HashSet<AttributeId>()
+  // First go through all these master attribute sets and update them
+  for atrId in values
+    if not ATTRIBUTE_LIST.get(atrId).parents.isEmpty()
+      error("Cannot directly modify dependent attribute!")
+      return
+    let value = values.get(atrId)
+    if value != this.getAttribute(atrId)
+      changeList.put(atrId, new Change(this.getAttribute(atrId), value))
+      ATTRIBUTE_STORE.setUnitAttribute(this, atrId, value)
+      toUpdate.addAll(ATTRIBUTE_LIST.get(atrId).dependents)
 
-    // Now process all the updates, now that we have all the effected dependents in the list
-    this.processUpdates(toUpdate, changeList)
-    // Allll the things have been updated.
-    this.applyChanges(changeList)
+  // Now process all the updates, now that we have all the effected dependents in the list
+  this.processUpdates(toUpdate, changeList)
+  // Allll the things have been updated.
+  this.applyChanges(changeList)
 
 /** Adds the given delta to the specified attribute. 
   *
   * Throws an error if the attribute is a dependent.
   */
 public function unit.addAttribute(AttributeId atrId, int delta)
-    this.setAttribute(atrId, this.getAttribute(atrId) + delta)
+  this.setAttribute(atrId, this.getAttribute(atrId) + delta)
 
 public function unit.addAttributeList(IterableMap<AttributeId, int> values)
-    for atrId in values
-        values.put(atrId, values.get(atrId) + this.getAttribute(atrId))
-    this.setAttributeList(values)
+  for atrId in values
+    values.put(atrId, values.get(atrId) + this.getAttribute(atrId))
+  this.setAttributeList(values)
 
 public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
-    for atrId in values
-        values.put(atrId, this.getAttribute(atrId) - values.get(atrId))
-    this.setAttributeList(values)
+  for atrId in values
+    values.put(atrId, this.getAttribute(atrId) - values.get(atrId))
+  this.setAttributeList(values)
 
 public function unit.initAttributes(IterableMap<AttributeId, int> values)
-    for atrId in ATTRIBUTE_LIST
-        let atr = ATTRIBUTE_LIST.get(atrId)
-        if atr.parents == null and not values.has(atrId)
-            // master attribute not in the list, needs to be added
-            values.put(atrId, 0)
-    this.setAttributeList(values)
+  for atrId in ATTRIBUTE_LIST
+    let atr = ATTRIBUTE_LIST.get(atrId)
+    if atr.parents == null and not values.has(atrId)
+      // master attribute not in the list, needs to be added
+      values.put(atrId, 0)
+  this.setAttributeList(values)
 
 // Attempt to grab as many attributes from this unit's stats as possible
 public function unit.parseAndInitAttributes()
-    let values = new IterableMap<AttributeId, int>()
-        ..put(ATR_LIFE_MAX_FLAT, this.getMaxHP().round())
-        ..put(ATR_MANA_MAX, this.getMaxMana().round())
-        ..put(ATR_ATK_CD_FLAT, (this.getAttackCooldown(0) * 100).round())
-        ..put(ATR_ATK_DMG_FLAT, this.getBaseDamage(0))
-        ..put(ATR_ATK_DICE_FLAT, this.getDiceNumber(0))
-        ..put(ATR_ATK_DICE_SIDES_FLAT, this.getDiceSides(0))
-        ..put(ATR_ARMOR_FLAT, this.getArmor().round())
-        ..put(ATR_MOVESPEED_FLAT, this.getMoveSpeed().round())
-        ..put(ATR_AGILITY_FLAT, this.getAgi(false))
-        ..put(ATR_STRENGTH_FLAT, this.getStr(false))
-        ..put(ATR_INTELLIGENCE_FLAT, this.getInt(false))
-    this.initAttributes(values)
+  let values = new IterableMap<AttributeId, int>()
+    ..put(ATR_LIFE_MAX_FLAT, this.getMaxHP().round())
+    ..put(ATR_MANA_MAX, this.getMaxMana().round())
+    ..put(ATR_ATK_CD_FLAT, (this.getAttackCooldown(0) * 100).round())
+    ..put(ATR_ATK_DMG_FLAT, this.getBaseDamage(0))
+    ..put(ATR_ATK_DICE_FLAT, this.getDiceNumber(0))
+    ..put(ATR_ATK_DICE_SIDES_FLAT, this.getDiceSides(0))
+    ..put(ATR_ARMOR_FLAT, this.getArmor().round())
+    ..put(ATR_MOVESPEED_FLAT, this.getMoveSpeed().round())
+    ..put(ATR_AGILITY_FLAT, this.getAgi(false))
+    ..put(ATR_STRENGTH_FLAT, this.getStr(false))
+    ..put(ATR_INTELLIGENCE_FLAT, this.getInt(false))
+  this.initAttributes(values)
 // ===== Registration =====
 
 /** Build a list of AttributeIds */
 public function asList(vararg AttributeId atr_ids) returns HashList<AttributeId>
-    let list = new HashList<AttributeId>()
-    for id in atr_ids
-        list.add(id)
-    return list
+  let list = new HashList<AttributeId>()
+  for id in atr_ids
+    list.add(id)
+  return list
 
 /** Registers a new attribute for the system. */
 public function registerAttribute(AttributeId atrId, HashList<AttributeId> parents, AttributeCalculator calculator) returns Attribute
-    if registrationFinished
-        error("Attribute registration has finished!")
-    let atr =  new Attribute(atrId, parents, calculator)
-    ATTRIBUTE_LIST.put(atrId, atr)
-    return atr
+  if registrationFinished
+    error("Attribute registration has finished!")
+  let atr =  new Attribute(atrId, parents, calculator)
+  ATTRIBUTE_LIST.put(atrId, atr)
+  return atr
 
 /** Register a new attribute for the system. Use this method for master attributes,
 * which are dependent on no others for their value.
 */
 public function registerAttribute(AttributeId atrId) returns Attribute
-    if registrationFinished
-        error("Attribute registration has finished!")
-    let atr = new Attribute(atrId)
-    ATTRIBUTE_LIST.put(atrId, atr)
-    return atr
+  if registrationFinished
+    error("Attribute registration has finished!")
+  let atr = new Attribute(atrId)
+  ATTRIBUTE_LIST.put(atrId, atr)
+  return atr
 
 init 
-    registerPrimitiveAttributes()
-    registerAttributes()
-    // register all the dependencies now
-    for atrId in ATTRIBUTE_LIST
-        let atr = ATTRIBUTE_LIST.get(atrId)
-        if atr.parents != null
-            for parentId in atr.parents
-                if not ATTRIBUTE_LIST.has(parentId)
-                    // The given parent was never registered, do it for them as a master atr
-                    registerAttribute(atrId)
-                ATTRIBUTE_LIST.get(parentId).dependents.add(atrId)
-    registrationFinished = true
+  registerPrimitiveAttributes()
+  registerAttributes()
+  // register all the dependencies now
+  for atrId in ATTRIBUTE_LIST
+    let atr = ATTRIBUTE_LIST.get(atrId)
+    if atr.parents != null
+      for parentId in atr.parents
+        if not ATTRIBUTE_LIST.has(parentId)
+          // The given parent was never registered, do it for them as a master atr
+          registerAttribute(atrId)
+        ATTRIBUTE_LIST.get(parentId).dependents.add(atrId)
+  registrationFinished = true
