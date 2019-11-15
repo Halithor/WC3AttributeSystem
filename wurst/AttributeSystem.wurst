@@ -42,6 +42,8 @@ class AttributeStore
 public class Attribute
   // The id of this attribute
   AttributeId atrId
+  // The name of this attribute
+  string name
   // The list of other attributes that this attribute depends on.
   HashList<AttributeId> parents = null
   // The attributes that depend on this attribute. This is calculated after 
@@ -52,11 +54,13 @@ public class Attribute
   // Effects that happen when the value of this attribute changes.
   LinkedList<AttributeChangeHandler> changeHandlers = new LinkedList<AttributeChangeHandler>()
 
-  construct(AttributeId atr_id)
+  construct(AttributeId atr_id, string name)
     this.atrId = atr_id
+    this.name = name
 
-  construct(AttributeId atr_id, HashList<AttributeId> parents, AttributeCalculator calculator)
+  construct(AttributeId atr_id, string name, HashList<AttributeId> parents, AttributeCalculator calculator)
     this.atrId = atr_id
+    this.name = name
     this.parents = parents
     this.calculator = calculator
 
@@ -125,7 +129,7 @@ public function unit.setAttribute(AttributeId atrId, int value)
   let atr = ATTRIBUTE_LIST.get(atrId)
   let changeList = new IterableMap<AttributeId, Change>()
   if atr.isDependentAttribute()
-    error("Cannot set a dependent attribute") 
+    error("Cannot set dependent attribute \"" + atr.name + "\"!") 
     return
   // Check to make sure this is actually a change
   if this.getAttribute(atrId) != value
@@ -148,8 +152,9 @@ public function unit.setAttributeList(IterableMap<AttributeId, int> values)
   let toUpdate = new HashSet<AttributeId>()
   // First go through all these master attribute sets and update them
   for atrId in values
-    if ATTRIBUTE_LIST.get(atrId).isDependentAttribute()
-      error("Cannot directly modify dependent attribute!")
+    let atr = ATTRIBUTE_LIST.get(atrId)
+    if atr.isDependentAttribute()
+      error("Cannot directly modify dependent attribute \"" + atr.name + "\"!") 
       return
     let value = values.get(atrId)
     if value != this.getAttribute(atrId)
@@ -204,7 +209,7 @@ public function unit.initAttributes(IterableMap<AttributeId, int> values)
 public function unit.parseAndInitAttributes()
   let values = new IterableMap<AttributeId, int>()
     ..put(ATR_LIFE_MAX_FLAT, this.getMaxHP().round())
-    ..put(ATR_MANA_MAX, this.getMaxMana().round())
+    ..put(ATR_MANA_MAX_FLAT, this.getMaxMana().round())
     ..put(ATR_ATK_CD_FLAT, (this.getAttackCooldown(0) * 100).round())
     ..put(ATR_ATK_DMG_FLAT, this.getBaseDamage(0))
     ..put(ATR_ATK_DICE_FLAT, this.getDiceNumber(0))
@@ -225,10 +230,10 @@ public function asList(vararg AttributeId atr_ids) returns HashList<AttributeId>
   return list
 
 /** Registers a new attribute for the system. */
-public function registerAttribute(AttributeId atrId, HashList<AttributeId> parents, AttributeCalculator calculator) returns Attribute
+public function registerAttribute(AttributeId atrId, string name, HashList<AttributeId> parents, AttributeCalculator calculator) returns Attribute
   if registrationFinished
     error("Attribute registration has finished!")
-  let atr =  new Attribute(atrId, parents, calculator)
+  let atr =  new Attribute(atrId, name, parents, calculator)
   ATTRIBUTE_LIST.put(atrId, atr)
   return atr
 
@@ -236,10 +241,10 @@ public function registerAttribute(AttributeId atrId, HashList<AttributeId> paren
   * Register a new attribute for the system. Use this method for master attributes,
   * which are dependent on no others for their value.
   */
-public function registerAttribute(AttributeId atrId) returns Attribute
+public function registerAttribute(AttributeId atrId, string name) returns Attribute
   if registrationFinished
     error("Attribute registration has finished!")
-  let atr = new Attribute(atrId)
+  let atr = new Attribute(atrId, name)
   ATTRIBUTE_LIST.put(atrId, atr)
   return atr
 
@@ -247,12 +252,14 @@ init
   registerPrimitiveAttributes()
   registerAttributes()
   // register all the dependencies now
+  var unknownCount = 0
   for atrId in ATTRIBUTE_LIST
     let atr = ATTRIBUTE_LIST.get(atrId)
     if atr.parents != null
       for parentId in atr.parents
         if not ATTRIBUTE_LIST.has(parentId)
           // The given parent was never registered, do it for them as a master atr
-          registerAttribute(parentId)
+          registerAttribute(parentId, "Unknown Parent " + unknownCount.toString())
+          unknownCount++
         ATTRIBUTE_LIST.get(parentId).dependents.add(atrId)
   registrationFinished = true
