@@ -80,7 +80,7 @@ public class Attribute
       handler.handleAtrChange(u, change.newVal, change.oldVal)
 
   function isDependentAttribute() returns bool
-    return parents == null or parents.isEmpty()
+    return parents != null and not parents.isEmpty()
 
 public constant ATTRIBUTE_STORE = new AttributeStore()
 
@@ -196,8 +196,8 @@ public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
   */
 public function unit.initAttributes(IterableMap<AttributeId, int> values)
   for atrId in ATTRIBUTE_LIST
-    let atr = ATTRIBUTE_LIST.get(atrId)
-    if atr.parents == null and not values.has(atrId)
+    // let atr = ATTRIBUTE_LIST.get(atrId)
+    if not values.has(atrId)
       // master attribute not in the list, needs to be added
       values.put(atrId, 0)
   this.setAttributeList(values)
@@ -252,14 +252,12 @@ init
   registerPrimitiveAttributes()
   registerAttributes()
   // register all the dependencies now
-  var unknownCount = 0
   for atrId in ATTRIBUTE_LIST
     let atr = ATTRIBUTE_LIST.get(atrId)
     if atr.parents != null
       for parentId in atr.parents
         if not ATTRIBUTE_LIST.has(parentId)
           // The given parent was never registered, do it for them as a master atr
-          registerAttribute(parentId, "Unknown Parent " + unknownCount.toString())
-          unknownCount++
+          error("Unknown parent attribute registered for " + atr.name + "!")
         ATTRIBUTE_LIST.get(parentId).dependents.add(atrId)
   registrationFinished = true
