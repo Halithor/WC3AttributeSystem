@@ -20,10 +20,12 @@ import initlater AttributeSystem
 @configurable public HashList<AttributeId> parentsLifeMax = asList(ATR_STRENGTH, ATR_LIFE_MAX_FLAT, ATR_MANA_MAX_PERC)
 @configurable public AttributeCalculator calculateLifeRegen = u -> ((u.getAttribute(ATR_LIFE_REGEN_FLAT) + (u.getAttribute(ATR_STRENGTH) * lifeRegenPerStr)) * (1.0 + (u.getAttribute(ATR_LIFE_REGEN_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsLifeRegen = asList(ATR_STRENGTH, ATR_LIFE_REGEN_FLAT, ATR_LIFE_REGEN_PERC)
+
 @configurable public AttributeCalculator calculateManaMax = u -> ((u.getAttribute(ATR_MANA_MAX_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * manaMaxPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_MAX_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsManaMax = asList(ATR_INTELLIGENCE, ATR_MANA_MAX_FLAT, ATR_MANA_MAX_PERC)
 @configurable public AttributeCalculator calculateManaRegen = u -> ((u.getAttribute(ATR_MANA_REGEN_FLAT) + (u.getAttribute(ATR_INTELLIGENCE) * manaRegenPerInt)) * (1.0 + (u.getAttribute(ATR_MANA_REGEN_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsManaRegen = asList(ATR_INTELLIGENCE, ATR_MANA_MAX_FLAT, ATR_MANA_MAX_PERC)
+
 @configurable public AttributeCalculator calculateArmor =  u -> ((u.getAttribute(ATR_ARMOR_FLAT) + (u.getAttribute(ATR_AGILITY) * armorPerAgi)) * (1.0 + (u.getAttribute(ATR_ARMOR_PERC) / 100.0))).round()
 @configurable public HashList<AttributeId> parentsArmor = asList(ATR_AGILITY, ATR_ARMOR_FLAT, ATR_ARMOR_PERC)
 // Attack Speed = Base Cooldown Time ÷ (1 + Increased Attack Speed)

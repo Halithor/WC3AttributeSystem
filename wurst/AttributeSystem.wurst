@@ -75,6 +75,8 @@ public class Attribute
     for handler in changeHandlers
       handler.handleAtrChange(u, change.newVal, change.oldVal)
 
+  function isDependentAttribute() returns bool
+    return parents == null or parents.isEmpty()
 
 public constant ATTRIBUTE_STORE = new AttributeStore()
 
@@ -122,8 +124,8 @@ public function unit.getAttribute(AttributeId atrId) returns int
 public function unit.setAttribute(AttributeId atrId, int value)
   let atr = ATTRIBUTE_LIST.get(atrId)
   let changeList = new IterableMap<AttributeId, Change>()
-  if atr.parents != null
-    error("Cannot set an attrbute with parents") 
+  if atr.isDependentAttribute()
+    error("Cannot set a dependent attribute") 
     return
   // Check to make sure this is actually a change
   if this.getAttribute(atrId) != value
@@ -146,7 +148,7 @@ public function unit.setAttributeList(IterableMap<AttributeId, int> values)
   let toUpdate = new HashSet<AttributeId>()
   // First go through all these master attribute sets and update them
   for atrId in values
-    if not ATTRIBUTE_LIST.get(atrId).parents.isEmpty()
+    if ATTRIBUTE_LIST.get(atrId).isDependentAttribute()
       error("Cannot directly modify dependent attribute!")
       return
     let value = values.get(atrId)
@@ -160,7 +162,8 @@ public function unit.setAttributeList(IterableMap<AttributeId, int> values)
   // Allll the things have been updated.
   this.applyChanges(changeList)
 
-/** Adds the given delta to the specified attribute. 
+/** 
+  * Adds the given delta to the specified attribute. 
   *
   * Throws an error if the attribute is a dependent.
   */
@@ -250,6 +253,6 @@ init
       for parentId in atr.parents
         if not ATTRIBUTE_LIST.has(parentId)
           // The given parent was never registered, do it for them as a master atr
-          registerAttribute(atrId)
+          registerAttribute(parentId)
         ATTRIBUTE_LIST.get(parentId).dependents.add(atrId)
   registrationFinished = true
