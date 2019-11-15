@@ -196,8 +196,8 @@ public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
   */
 public function unit.initAttributes(IterableMap<AttributeId, int> values)
   for atrId in ATTRIBUTE_LIST
-    // let atr = ATTRIBUTE_LIST.get(atrId)
-    if not values.has(atrId)
+    let atr = ATTRIBUTE_LIST.get(atrId)
+    if not atr.isDependentAttribute() and not values.has(atrId)
       // master attribute not in the list, needs to be added
       values.put(atrId, 0)
   this.setAttributeList(values)
