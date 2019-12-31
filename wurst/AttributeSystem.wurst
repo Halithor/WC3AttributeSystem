@@ -6,6 +6,7 @@ import AttributeSystem_PrimitiveAtrs
 import ErrorHandling
 import HashSet
 import HashMap
+import UnitIndexer
 
 // State variables
 var registrationFinished = false
@@ -29,13 +30,16 @@ class AttributeStore
     ht = InitHashtable()
 
   function setUnitAttribute(unit u, AttributeId atrId, int value)
-    ht.saveInt(u.getHandleId(), atrId.id, value)
+    ht.saveInt(u.getIndex(), atrId.id, value)
 
   function getUnitAttribute(unit u, AttributeId atrId) returns int
     int value = 0
-    if ht.hasInt(u.getHandleId(), atrId.id)
-      value = ht.loadInt(u.getHandleId(), atrId.id)
+    if ht.hasInt(u.getIndex(), atrId.id)
+      value = ht.loadInt(u.getIndex(), atrId.id)
     return value
+
+  function removeUnitAttributes(unit u)
+    ht.flushChild(u.getIndex())
 
 
 // Class that represents an attribute.
@@ -251,6 +255,8 @@ public function registerAttribute(AttributeId atrId, string name) returns Attrib
 init 
   registerPrimitiveAttributes()
   registerAttributes()
+  onUnitDeindex() ->
+    ATTRIBUTE_STORE.removeUnitAttributes(getIndexingUnit())
   // register all the dependencies now
   for atrId in ATTRIBUTE_LIST
     let atr = ATTRIBUTE_LIST.get(atrId)
