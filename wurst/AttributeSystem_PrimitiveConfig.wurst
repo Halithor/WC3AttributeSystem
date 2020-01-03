@@ -66,15 +66,11 @@ end
 // These are handlers that give the primitive attributes effects like you would find in
 // standard WC3.
 @configurable public AttributeChangeHandler handleLifeMax = (u, value, old) -> begin
-    let hpPerc = u.getHP() / u.getMaxHP()
-    u.setMaxHP(value)
-    u.setHP(hpPerc * value)
+    u.setMaxHP(value, true)
 end
 @configurable public AttributeChangeHandler handleLifeRegen = (u, value, old) -> setUnitBonus(u, Bonus.LIFEREGEN, value) 
 @configurable public AttributeChangeHandler handleManaMax = (u, value, old) -> begin
-    let manaPerc = u.getMana() / u.getMaxMana()
-    u.setMaxMana(value)
-    u.setHP(manaPerc * value)
+    u.setMaxMana(value, true)
 end
 @configurable public AttributeChangeHandler handleManaRegen = (u, value, old) -> setUnitBonus(u, Bonus.MANAREGEN, value)
 @configurable public AttributeChangeHandler handleArmor = (u, value, old) -> u.setArmor(value.toReal())
