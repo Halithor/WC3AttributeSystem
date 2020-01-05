@@ -187,6 +187,7 @@ public function unit.addAttributeList(IterableMap<AttributeId, int> values)
   for atrId in values
     results.put(atrId, values.get(atrId) + this.getAttribute(atrId))
   this.setAttributeList(results)
+  destroy results
 /**
   * Removes the values in the list from the unit's attributes 
   */
@@ -195,6 +196,7 @@ public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
   for atrId in values
     results.put(atrId, this.getAttribute(atrId) - values.get(atrId))
   this.setAttributeList(results)
+  destroy results
 
 /**
   * Initializes the attributes list for a given unit with the given values 
@@ -207,6 +209,7 @@ public function unit.initAttributes(IterableMap<AttributeId, int> values)
       // master attribute not in the list, needs to be added
       results.put(atrId, 0)
   this.setAttributeList(results)
+  destroy results
 
 /**
   * Attempt to parse as many starting attributes as we can from the given unit and initialize an 
