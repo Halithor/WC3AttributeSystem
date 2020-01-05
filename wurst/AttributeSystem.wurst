@@ -183,28 +183,30 @@ public function unit.addAttribute(AttributeId atrId, int delta)
   * Adds the list of values to the associated attribute
   */
 public function unit.addAttributeList(IterableMap<AttributeId, int> values)
+  let results = new IterableMap<AttributeId, int>()
   for atrId in values
-    values.put(atrId, values.get(atrId) + this.getAttribute(atrId))
-  this.setAttributeList(values)
-
+    results.put(atrId, values.get(atrId) + this.getAttribute(atrId))
+  this.setAttributeList(results)
 /**
   * Removes the values in the list from the unit's attributes 
   */
 public function unit.removeAttributeList(IterableMap<AttributeId, int> values)
+  let results = new IterableMap<AttributeId, int>()
   for atrId in values
-    values.put(atrId, this.getAttribute(atrId) - values.get(atrId))
-  this.setAttributeList(values)
+    results.put(atrId, this.getAttribute(atrId) - values.get(atrId))
+  this.setAttributeList(results)
 
 /**
   * Initializes the attributes list for a given unit with the given values 
   */
 public function unit.initAttributes(IterableMap<AttributeId, int> values)
+  let results = new IterableMap<AttributeId, int>()..addAll(values)
   for atrId in ATTRIBUTE_LIST
     let atr = ATTRIBUTE_LIST.get(atrId)
-    if not atr.isDependentAttribute() and not values.has(atrId)
+    if not atr.isDependentAttribute() and not results.has(atrId)
       // master attribute not in the list, needs to be added
-      values.put(atrId, 0)
-  this.setAttributeList(values)
+      results.put(atrId, 0)
+  this.setAttributeList(results)
 
 /**
   * Attempt to parse as many starting attributes as we can from the given unit and initialize an 
