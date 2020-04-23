@@ -1,9 +1,6 @@
 ---
-projectName: "HalithorsAttributeSystem"
-dependencies:
-- "https://github.com/wurstscript/wurstStdlib2"
+projectName: HalithorsAttributeSystem
 buildMapData:
-  name: "DefaultName"
-  fileName: "DefaultFileName"
-  author: "DefaultAuthor"
-  playerCount: 1
+  name: DefaultName
+  fileName: DefaultFileName
+  author: DefaultAuthor
