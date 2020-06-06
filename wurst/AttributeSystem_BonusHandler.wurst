@@ -39,8 +39,8 @@ public function getUnitBonus(unit u, Bonus bonusType) returns int
 
 //Adds to current bonus bonusValue
 public function addUnitBonus(unit u, Bonus bonusType, int bonusValue)
-  int currentBonusValue = getUnitBonus(u, bonusType)
-  int afterBonusValue = currentBonusValue + bonusValue
+  let currentBonusValue = getUnitBonus(u, bonusType)
+  let afterBonusValue = currentBonusValue + bonusValue
   setUnitBonus(u, bonusType, afterBonusValue)
 
 /** Sets the bonus of specified type for the unit to the given amount. */
